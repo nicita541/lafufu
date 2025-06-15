@@ -118,6 +118,34 @@
       document.body.appendChild(script);
 
     </script>
-  <script src="https://yandex.ru/games/sdk/v2">
+  <script src="https://yandex.ru/games/sdk/v2"></script>
+<script>
+  let ysdk;
+  YaGames.init().then(sdk => {
+    ysdk = sdk;
+    console.log("✅ Yandex SDK инициализирован");
+  });
+
+  function ShowFullscreenAd() {
+    if (!ysdk) {
+      console.warn("❌ Yandex SDK не инициализирован");
+      return;
+    }
+
+    ysdk.adv.showFullscreenAdv({
+      callbacks: {
+        onClose: function(wasShown) {
+          console.log("🎬 Реклама завершена. Показана:", wasShown);
+          SendMessage("GameManager", "OnAdClosed", wasShown ? "1" : "0");
+        },
+        onError: function(error) {
+          console.error("⚠️ Ошибка при показе рекламы:", error);
+          SendMessage("GameManager", "OnAdClosed", "0");
+        }
+      }
+    });
+  }
+</script>
+
   </body>
 </html>
